@@ -29,6 +29,7 @@ module.exports = {
     new HtmlWebpackPlugin({ inject: true, template: './src/index.html' }),
   ],
   devServer: {
+    historyApiFallback: true,
     contentBase: './build',
     hot: true,
   },
