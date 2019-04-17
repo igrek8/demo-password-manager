@@ -12,12 +12,17 @@ const styles = (theme) => ({
       marginTop: theme.spacing.unit,
     },
   },
+  button: {
+    '& + &': {
+      marginLeft: theme.spacing.unit,
+    },
+  },
   input: {
     width: '100%',
   },
 });
 
-const SignUpForm = ({ handleSubmit, form, classes }) => {
+const SignUpForm = ({ handleSubmit, form, classes, children }) => {
   return (
     <form onSubmit={handleSubmit} onReset={form.reset}>
       <fieldset>
@@ -35,8 +40,15 @@ const SignUpForm = ({ handleSubmit, form, classes }) => {
           />
         </label>
         <div className={cn(classes.item)}>
-          <button type='submit'>Submit</button>
-          <button type='reset'>Clear</button>
+          <button type='submit' className={cn(classes.button)}>
+            Sign in
+          </button>
+          <button type='reset' className={cn(classes.button)}>
+            Clear
+          </button>
+          {React.Children.map(children, (child) => (
+            <span className={cn(classes.button)}>{child}</span>
+          ))}
         </div>
       </fieldset>
     </form>

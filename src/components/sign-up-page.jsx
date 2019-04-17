@@ -1,7 +1,10 @@
-import React, { useCallback } from 'react';
+import React, { useCallback, useContext } from 'react';
 import withStyles from '@material-ui/core/styles/withStyles';
 import { Form } from 'react-final-form';
 import SignUpForm from './sign-up-form';
+import SessionContext from './session-context';
+import { encryptData } from '../utils/cipher';
+import { createHash } from '../utils/password-manager';
 
 const styles = (theme) => ({
   root: {
@@ -16,14 +19,29 @@ const styles = (theme) => ({
 });
 
 const SignUpPage = ({ classes }) => {
-  const onFormSubmit = useCallback(({ password }, { reset }) => {
-    alert(password);
-    reset();
-  }, []);
+  const session = useContext(SessionContext);
+  const onFormSubmit = useCallback(
+    ({ password }, { reset }) => {
+      const secret = createHash(password);
+      const newSession = {};
+      const newSerializedSession = JSON.stringify(newSession);
+      const newEncryptedSession = encryptData(secret, newSerializedSession);
+      session.setDecryptedSession(newSession);
+      session.setEncryptedSession(newEncryptedSession);
+      reset();
+    },
+    [session],
+  );
   return (
     <div className={classes.root}>
       <div className={classes.content}>
-        <Form onSubmit={onFormSubmit} component={SignUpForm} />
+        <Form onSubmit={onFormSubmit} component={SignUpForm}>
+          {session.encryptedSession && (
+            <button type='button' onClick={session.destroySession}>
+              Destroy session
+            </button>
+          )}
+        </Form>
       </div>
     </div>
   );
