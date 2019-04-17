@@ -3,8 +3,7 @@ import { ADD_RESOURCE } from './resources-actions';
 const resourceReducer = (state = [], action) => {
   switch (action.type) {
     case ADD_RESOURCE: {
-      console.warn(action);
-      return state;
+      return [...state, action.payload];
     }
     default: {
       return state;

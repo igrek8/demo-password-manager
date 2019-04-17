@@ -6,6 +6,7 @@ import SignUpForm from './sign-up-form';
 import SessionContext from './session-context';
 import { encryptData, decryptDataSafe, INVALID_DATA } from '../utils/cipher';
 import { createHash } from '../utils/password-manager';
+import sessionReducer from './session-reducer';
 import { INIT_SESSION } from './session-actions';
 
 const styles = (theme) => ({
@@ -43,25 +44,18 @@ const SignUpPage = ({ classes }) => {
       const secret = createHash(password);
       if (session.encryptedSession) {
         const { encryptedSession } = session;
-        const decryptedSession = decryptDataSafe(secret, encryptedSession);
-        if (decryptedSession === INVALID_DATA) {
+        const data = decryptDataSafe(secret, encryptedSession);
+        if (data === INVALID_DATA) {
           return { [FORM_ERROR]: 'Invalid password' };
         }
-        const newSession = JSON.parse(decryptedSession);
-        session.dispatchDecryptedSession({
-          type: INIT_SESSION,
-          payload: newSession,
-        });
+        const decryptedSession = JSON.parse(data);
+        session.updateSession(decryptedSession);
         return null;
       }
-      const newSession = { resources: [] };
-      const newSerializedSession = JSON.stringify(newSession);
-      const newEncryptedSession = encryptData(secret, newSerializedSession);
-      session.dispatchDecryptedSession({
-        type: INIT_SESSION,
-        payload: newSession,
-      });
-      session.setEncryptedSession(newEncryptedSession);
+      const decryptedSession = sessionReducer(null, { type: INIT_SESSION });
+      const newSerializedSession = JSON.stringify(decryptedSession);
+      const encryptedSession = encryptData(secret, newSerializedSession);
+      session.persistSession(encryptedSession, decryptedSession);
       reset();
       return null;
     },

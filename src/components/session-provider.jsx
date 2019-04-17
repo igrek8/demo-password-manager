@@ -1,7 +1,5 @@
-import React, { useState, useReducer, useMemo, useCallback } from 'react';
+import React, { useState, useMemo, useCallback } from 'react';
 import SessionContext from './session-context';
-import sessionReducer from './session-reducer';
-import { DESTROY_SESSION, INIT_SESSION } from './session-actions';
 
 const sessionKey = 'session';
 
@@ -10,35 +8,35 @@ const getEncryptedSession = () => {
 };
 
 const SessionProvider = ({ children }) => {
-  const initialSession = sessionReducer(null, { type: INIT_SESSION });
   const [encryptedSession, setEncryptedSession] = useState(getEncryptedSession);
-  const [decryptedSession, dispatchDecryptedSession] = useReducer(
-    sessionReducer,
-    initialSession,
-  );
+  const [decryptedSession, updateSession] = useState(null);
   const destroySession = useCallback(() => {
     localStorage.removeItem(sessionKey);
     setEncryptedSession(null);
-    dispatchDecryptedSession({ type: DESTROY_SESSION });
+    updateSession(null);
   }, []);
-  const persistEncryptedSession = useCallback((newEncryptedSession) => {
-    localStorage.setItem(sessionKey, newEncryptedSession);
-    setEncryptedSession(newEncryptedSession);
-  }, []);
+  const persistSession = useCallback(
+    (nextEncryptedSession, nextDecryptedSession) => {
+      localStorage.setItem(sessionKey, nextEncryptedSession);
+      setEncryptedSession(nextEncryptedSession);
+      updateSession(nextDecryptedSession);
+    },
+    [updateSession, setEncryptedSession],
+  );
   const value = useMemo(() => {
     return {
       encryptedSession,
       decryptedSession,
-      setEncryptedSession: persistEncryptedSession,
-      dispatchDecryptedSession,
+      persistSession,
       destroySession,
+      updateSession,
     };
   }, [
     encryptedSession,
     decryptedSession,
-    persistEncryptedSession,
-    dispatchDecryptedSession,
+    persistSession,
     destroySession,
+    updateSession,
   ]);
   return (
     <SessionContext.Provider value={value}>{children}</SessionContext.Provider>
