@@ -46,7 +46,7 @@ const SignUpForm = ({
           </div>
         )}
         <label htmlFor='password' className={cn(classes.item)}>
-          Password
+          <span className={cn(classes.item)}>Password:</span>
           <Field
             id='password'
             name='password'
