@@ -30,6 +30,8 @@ const NewResource = (props) => {
     (resource) => {
       const secret = promptForPasswordHash();
       if (secret === null) {
+        // eslint-disable-next-line
+        alert('Invalid password');
         return { [FORM_ERROR]: 'Invalid password' };
       }
       const id = v4();

@@ -34,6 +34,11 @@ const confirmDestroy = () => {
   const checkValue = getCheckValue();
   // eslint-disable-next-line no-alert
   const value = prompt(`Enter ${checkValue} if you want to erase all data`);
+  if (value === null) {
+    // eslint-disable-next-line no-alert
+    alert('Failed to destroy session');
+    return false;
+  }
   return `${value}`.trim().toLowerCase() === checkValue;
 };
 

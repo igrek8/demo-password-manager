@@ -1,4 +1,8 @@
-import { ADD_RESOURCE, PUT_RESOURCE } from './resources-actions';
+import {
+  ADD_RESOURCE,
+  PUT_RESOURCE,
+  DESTROY_RESOURCE,
+} from './resources-actions';
 import { INIT_SESSION } from './session-actions';
 
 import resourcesReducer from './resources-reducer';
@@ -11,6 +15,7 @@ const sessionReducer = (state = null, action = {}) => {
       return initialState;
     }
     case PUT_RESOURCE:
+    case DESTROY_RESOURCE:
     case ADD_RESOURCE: {
       return {
         ...state,

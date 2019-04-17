@@ -1,41 +1,60 @@
-import React from 'react';
+import React, { useCallback } from 'react';
 import withStyles from '@material-ui/core/styles/withStyles';
 import Link from '@material-ui/core/Link';
 import { Link as RouterLink } from 'react-router-dom';
 import cn from 'classnames';
 
 const styles = (theme) => ({
-  root: {},
+  root: {
+    display: 'flex',
+    ...theme.typography.body2,
+    background: '#eee',
+    padding: theme.spacing.unit,
+    '&:hover': {
+      textDecoration: 'none',
+      background: '#c7c7c7',
+    },
+  },
   item: {
     '& + &': {
       marginTop: theme.spacing.unit,
     },
   },
-  code: {
-    marginTop: 0,
-    marginBottom: 0,
-    padding: theme.spacing.unit,
-    backgroundColor: 'bisque',
-    fontSize: 11,
-    borderRadius: 6,
+  destroyButton: {
+    marginLeft: 'auto',
+    color: 'tomato',
+    background: 'transparent',
+    border: 0,
+    lineHeight: 0,
+    cursor: 'pointer',
+    fontSize: 18,
   },
 });
 
-const Resource = ({ classes, ...props }) => {
-  const { id, name } = props;
+const Resource = ({ classes, destroyResource, ...props }) => {
+  const { id, name, records } = props;
+  const handleDestroy = useCallback(
+    (event) => {
+      event.preventDefault();
+      destroyResource(id);
+    },
+    [id, destroyResource],
+  );
   return (
-    <div className={classes.root}>
-      <Link
-        to={`/resources/${id}`}
-        className={cn(classes.item)}
-        component={RouterLink}
+    <Link
+      to={`/resources/${id}`}
+      className={cn(classes.item, classes.root)}
+      component={RouterLink}
+    >
+      {`[${id}] - ${name} / ${records.length} items`}
+      <button
+        type='button'
+        onClick={handleDestroy}
+        className={classes.destroyButton}
       >
-        {name || id}
-      </Link>
-      <pre className={cn(classes.item, classes.code)}>
-        {JSON.stringify(props, null, 2)}
-      </pre>
-    </div>
+        ✗
+      </button>
+    </Link>
   );
 };
 

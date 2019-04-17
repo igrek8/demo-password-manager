@@ -14,6 +14,10 @@ const styles = (theme) => ({
       borderWidth: 1,
       borderColor: '#ccc',
       borderStyle: 'solid',
+      '&[disabled]': {
+        color: 'darkgrey',
+        borderStyle: 'dashed',
+      },
     },
     label: {
       fontWeight: 'bold',

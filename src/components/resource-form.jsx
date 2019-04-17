@@ -1,5 +1,6 @@
 /* eslint-disable jsx-a11y/label-has-associated-control */
 /* eslint-disable jsx-a11y/label-has-for */
+/* eslint-disable jsx-a11y/no-autofocus */
 
 import React, { useCallback } from 'react';
 import { Field } from 'react-final-form';
@@ -42,6 +43,7 @@ const Records = ({ fields, classes, readOnly }) =>
           <Field
             name={nameKey}
             component='input'
+            required
             placeholder='Record name'
             disabled={readOnly}
             className={cn(classes.item, classes.input)}
@@ -51,6 +53,7 @@ const Records = ({ fields, classes, readOnly }) =>
           <span className={cn(classes.item)}>Sensitive data:</span>
           <Field
             name={dataKey}
+            required
             component='input'
             type={readOnly ? 'password' : 'text'}
             placeholder='Sensitive data'
@@ -97,8 +100,10 @@ const ResourceForm = ({
           name='name'
           id='resourceName'
           component='input'
+          autoFocus
           placeholder='Resource name'
           disabled={readOnly}
+          required
           className={cn(classes.input, classes.item)}
         />
       </label>
@@ -108,8 +113,18 @@ const ResourceForm = ({
         component={Records}
         classes={classes}
       />
-      {!readOnly && (
+      {id === null && (
         <div className={cn(classes.item)}>
+          <button type='submit' className={cn(classes.button)}>
+            Save
+          </button>
+          <button
+            type='reset'
+            disabled={readOnly}
+            className={cn(classes.button)}
+          >
+            Reset
+          </button>
           <button
             type='button'
             className={cn(classes.button)}
@@ -120,28 +135,13 @@ const ResourceForm = ({
           </button>
         </div>
       )}
-      {id === null && (
-        <div className={cn(classes.item)}>
-          <React.Fragment>
-            <button type='submit' className={cn(classes.button)}>
-              Create resource
-            </button>
-            <button
-              type='reset'
-              disabled={readOnly}
-              className={cn(classes.button)}
-            >
-              Reset
-            </button>
-          </React.Fragment>
-        </div>
-      )}
       {id !== null && readOnly && (
         <div className={cn(classes.item)}>
           <React.Fragment>
             <button
               type='button'
               onClick={onEdit}
+              autoFocus
               className={cn(classes.button)}
             >
               Edit resource
@@ -151,18 +151,24 @@ const ResourceForm = ({
       )}
       {id !== null && !readOnly && (
         <div className={cn(classes.item)}>
-          <React.Fragment>
-            <button type='submit' className={cn(classes.button)}>
-              Save resource
-            </button>
-            <button
-              type='reset'
-              disabled={readOnly}
-              className={cn(classes.button)}
-            >
-              Reset
-            </button>
-          </React.Fragment>
+          <button type='submit' className={cn(classes.button)}>
+            Save
+          </button>
+          <button
+            type='reset'
+            disabled={readOnly}
+            className={cn(classes.button)}
+          >
+            Reset
+          </button>
+          <button
+            type='button'
+            className={cn(classes.button)}
+            onClick={addRecord}
+            disabled={readOnly}
+          >
+            Add record
+          </button>
         </div>
       )}
     </form>

@@ -25,6 +25,8 @@ const EditResource = (props) => {
     (values) => {
       const secret = promptForPasswordHash();
       if (secret === null) {
+        // eslint-disable-next-line
+        alert('Invalid password');
         return { [FORM_ERROR]: 'Invalid password' };
       }
       const updatedResource = encryptResource(secret, values);
@@ -33,6 +35,8 @@ const EditResource = (props) => {
       const dataString = JSON.stringify(nextDecryptedSession);
       const encryptedSession = encryptData(secret, dataString);
       persistSession(encryptedSession, nextDecryptedSession);
+      setResource(updatedResource);
+      setReadOnly(true);
       return updatedResource;
     },
     [decryptedSession, persistSession],
