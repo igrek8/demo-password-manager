@@ -1,5 +1,7 @@
-import React, { useState, useMemo, useCallback } from 'react';
+import React, { useState, useReducer, useMemo, useCallback } from 'react';
 import SessionContext from './session-context';
+import SessionReducer from './session-reducer';
+import { DESTROY_SESSION } from './session-reducer-actions';
 
 const sessionKey = 'session';
 
@@ -9,11 +11,14 @@ const getEncryptedSession = () => {
 
 const SessionProvider = ({ children }) => {
   const [encryptedSession, setEncryptedSession] = useState(getEncryptedSession);
-  const [decryptedSession, setDecryptedSession] = useState(null);
+  const [decryptedSession, dispatchDecryptedSession] = useReducer(
+    SessionReducer,
+    null,
+  );
   const destroySession = useCallback(() => {
     localStorage.removeItem(sessionKey);
     setEncryptedSession(null);
-    setDecryptedSession(null);
+    dispatchDecryptedSession({ type: DESTROY_SESSION });
   }, []);
   const persistEncryptedSession = useCallback((newEncryptedSession) => {
     localStorage.setItem(sessionKey, newEncryptedSession);
@@ -24,14 +29,14 @@ const SessionProvider = ({ children }) => {
       encryptedSession,
       decryptedSession,
       setEncryptedSession: persistEncryptedSession,
-      setDecryptedSession,
+      dispatchDecryptedSession,
       destroySession,
     };
   }, [
     encryptedSession,
     decryptedSession,
     persistEncryptedSession,
-    setDecryptedSession,
+    dispatchDecryptedSession,
     destroySession,
   ]);
   return (

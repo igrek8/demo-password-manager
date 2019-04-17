@@ -6,6 +6,7 @@ import SignUpForm from './sign-up-form';
 import SessionContext from './session-context';
 import { encryptData, decryptDataSafe, INVALID_DATA } from '../utils/cipher';
 import { createHash } from '../utils/password-manager';
+import { INIT_SESSION } from './session-reducer-actions';
 
 const styles = (theme) => ({
   root: {
@@ -46,13 +47,19 @@ const SignUpPage = ({ classes }) => {
         if (decryptedSession === INVALID_DATA) {
           return { [FORM_ERROR]: 'Invalid password' };
         }
-        session.setDecryptedSession(decryptedSession);
+        session.dispatchDecryptedSession({
+          type: INIT_SESSION,
+          payload: { newSession: decryptedSession },
+        });
         return null;
       }
-      const newSession = {};
+      const newSession = { resources: [] };
       const newSerializedSession = JSON.stringify(newSession);
       const newEncryptedSession = encryptData(secret, newSerializedSession);
-      session.setDecryptedSession(newSession);
+      session.dispatchDecryptedSession({
+        type: INIT_SESSION,
+        payload: { newSession },
+      });
       session.setEncryptedSession(newEncryptedSession);
       reset();
       return null;
