@@ -1,9 +1,10 @@
 import React, { useCallback, useContext } from 'react';
 import withStyles from '@material-ui/core/styles/withStyles';
+import { FORM_ERROR } from 'final-form';
 import { Form } from 'react-final-form';
 import SignUpForm from './sign-up-form';
 import SessionContext from './session-context';
-import { encryptData } from '../utils/cipher';
+import { encryptData, decryptDataSafe, INVALID_DATA } from '../utils/cipher';
 import { createHash } from '../utils/password-manager';
 
 const styles = (theme) => ({
@@ -18,26 +19,48 @@ const styles = (theme) => ({
   },
 });
 
+const initialValues = {
+  password: '',
+};
+
 const SignUpPage = ({ classes }) => {
   const session = useContext(SessionContext);
   const onFormSubmit = useCallback(
     ({ password }, { reset }) => {
       const secret = createHash(password);
+      if (session.encryptedSession) {
+        const { encryptedSession } = session;
+        const decryptedSession = decryptDataSafe(secret, encryptedSession);
+        if (decryptedSession === INVALID_DATA) {
+          return { [FORM_ERROR]: 'Invalid password' };
+        }
+        session.setDecryptedSession(decryptedSession);
+        return null;
+      }
       const newSession = {};
       const newSerializedSession = JSON.stringify(newSession);
       const newEncryptedSession = encryptData(secret, newSerializedSession);
       session.setDecryptedSession(newSession);
       session.setEncryptedSession(newEncryptedSession);
       reset();
+      return null;
     },
     [session],
   );
+  const { encryptedSession } = session;
   return (
     <div className={classes.root}>
       <div className={classes.content}>
-        <Form onSubmit={onFormSubmit} component={SignUpForm}>
-          {session.encryptedSession && (
-            <button type='button' onClick={session.destroySession}>
+        <Form
+          destroyOnUnregister
+          onSubmit={onFormSubmit}
+          component={SignUpForm}
+          initialValues={initialValues}
+          submitButtonText={encryptedSession ? 'Open' : 'Create'}
+          title={encryptedSession ? 'Open MasterVault' : 'Create MasterVault'}
+        >
+          {encryptedSession && (
+            <button type='reset' onClick={session.destroySession}>
               Destroy session
             </button>
           )}

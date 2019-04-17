@@ -8,6 +8,7 @@ import withStyles from '@material-ui/core/styles/withStyles';
 
 const styles = (theme) => ({
   item: {
+    display: 'block',
     '& + &': {
       marginTop: theme.spacing.unit,
     },
@@ -20,13 +21,30 @@ const styles = (theme) => ({
   input: {
     width: '100%',
   },
+  error: {
+    color: 'tomato',
+  },
 });
 
-const SignUpForm = ({ handleSubmit, form, classes, children }) => {
+const SignUpForm = ({
+  title,
+  submitError,
+  submitFailed,
+  submitButtonText,
+  handleSubmit,
+  form,
+  classes,
+  children,
+}) => {
   return (
     <form onSubmit={handleSubmit} onReset={form.reset}>
       <fieldset>
-        <legend className={cn(classes.item)}>Sign up</legend>
+        <legend>{title}</legend>
+        {submitFailed && (
+          <div className={cn(classes.item, classes.error)}>
+            {submitError || 'Something went wrong'}
+          </div>
+        )}
         <label htmlFor='password' className={cn(classes.item)}>
           Password
           <Field
@@ -35,20 +53,21 @@ const SignUpForm = ({ handleSubmit, form, classes, children }) => {
             type='password'
             autoFocus
             required
+            placeholder='Type master password'
             component='input'
             className={cn(classes.input, classes.item)}
           />
         </label>
         <div className={cn(classes.item)}>
           <button type='submit' className={cn(classes.button)}>
-            Sign in
-          </button>
-          <button type='reset' className={cn(classes.button)}>
-            Clear
+            {submitButtonText}
           </button>
           {React.Children.map(children, (child) => (
             <span className={cn(classes.button)}>{child}</span>
           ))}
+          <button type='reset' className={cn(classes.button)}>
+            Clear
+          </button>
         </div>
       </fieldset>
     </form>

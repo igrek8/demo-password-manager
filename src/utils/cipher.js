@@ -2,6 +2,8 @@ import CryptoJS from 'crypto-js';
 
 const IV_LENGTH = 16;
 
+export const INVALID_DATA = Symbol('INVALID_DATA');
+
 export const encryptData = (secret, data) => {
   const seed = CryptoJS.enc.Utf8.parse(secret);
   const ciphertext = data.toString();
@@ -31,7 +33,7 @@ export const decryptDataSafe = (secret, data) => {
     return decryptData(secret, data);
   } catch (caughtErr) {
     if (/^failed to decoded$/i.test(caughtErr.message)) {
-      return null;
+      return INVALID_DATA;
     }
     throw caughtErr;
   }
