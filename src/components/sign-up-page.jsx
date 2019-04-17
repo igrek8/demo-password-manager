@@ -23,6 +23,18 @@ const initialValues = {
   password: '',
 };
 
+const getCheckValue = () =>
+  Math.random()
+    .toString()
+    .substr(2, 4);
+
+const confirmDestroy = () => {
+  const checkValue = getCheckValue();
+  // eslint-disable-next-line no-alert
+  const value = prompt(`Enter ${checkValue} if you want to erase all data`);
+  return `${value}`.trim().toLowerCase() === checkValue;
+};
+
 const SignUpPage = ({ classes }) => {
   const session = useContext(SessionContext);
   const onFormSubmit = useCallback(
@@ -47,6 +59,11 @@ const SignUpPage = ({ classes }) => {
     },
     [session],
   );
+  const onSessionDestoy = useCallback(() => {
+    if (confirmDestroy()) {
+      session.destroySession();
+    }
+  }, [session]);
   const { encryptedSession } = session;
   return (
     <div className={classes.root}>
@@ -60,7 +77,7 @@ const SignUpPage = ({ classes }) => {
           title={encryptedSession ? 'Open MasterVault' : 'Create MasterVault'}
         >
           {encryptedSession && (
-            <button type='reset' onClick={session.destroySession}>
+            <button type='reset' onClick={onSessionDestoy}>
               Destroy session
             </button>
           )}
