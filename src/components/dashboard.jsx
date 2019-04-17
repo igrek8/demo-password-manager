@@ -7,12 +7,14 @@ import Resources from './resources';
 import NewResource from './new-resource';
 import EditResource from './edit-resource';
 
-const styles = () => ({
+const styles = (theme) => ({
   root: {
-    display: 'flex',
     background: '#fff',
     height: '100%',
     minHeight: '100vh',
+    [theme.breakpoints.up('md')]: {
+      display: 'flex',
+    },
   },
 });
 
@@ -27,9 +29,9 @@ const Dashboard = ({ classes }) => {
       <Nav paths={paths} />
       <Main>
         <Switch>
-          <Route exact path='/' component={Resources} />
           <Route exact path='/resources/new' component={NewResource} />
           <Route exact path='/resources/:id' component={EditResource} />
+          <Route component={Resources} />
         </Switch>
       </Main>
     </div>

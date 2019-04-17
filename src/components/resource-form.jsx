@@ -92,7 +92,7 @@ const ResourceForm = ({
   return (
     <form onSubmit={handleSubmit} onReset={form.reset} className={classes.root}>
       <Typography variant='title' className={cn(classes.item)}>
-        {id ? `Edit resource ${id}` : 'New resource'}
+        {id ? 'Edit resource' : 'New resource'}
       </Typography>
       <label htmlFor='resourceName' className={cn(classes.item)}>
         <span className={cn(classes.item)}>Resource name:</span>

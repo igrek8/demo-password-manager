@@ -20,18 +20,18 @@ module.exports = {
     extensions: ['.js', '.jsx'],
   },
   output: {
-    path: `${__dirname}/build`,
+    path: `${__dirname}/static`,
     publicPath: '/',
-    filename: 'main.js',
+    filename: 'bundle.js',
   },
   plugins: [
     new SourceMapDevToolPlugin({}),
     new HotModuleReplacementPlugin({}),
-    new HtmlWebpackPlugin({ inject: true, template: './src/index.html' }),
+    new HtmlWebpackPlugin({ template: './index.html' }),
   ],
   devServer: {
     historyApiFallback: true,
-    contentBase: './build',
+    contentBase: './',
     hot: true,
   },
 };

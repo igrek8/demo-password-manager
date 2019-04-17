@@ -46,7 +46,7 @@ const Resource = ({ classes, destroyResource, ...props }) => {
       className={cn(classes.item, classes.root)}
       component={RouterLink}
     >
-      {`[${id}] - ${name} / ${records.length} items`}
+      {`${name} / ${records.length} items`}
       <button
         type='button'
         onClick={handleDestroy}

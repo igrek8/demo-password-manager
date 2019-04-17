@@ -16,7 +16,7 @@ const styles = (theme) => ({
     ...theme.typography.body1,
   },
   content: {
-    width: 320,
+    width: 300,
     margin: 'auto',
   },
 });

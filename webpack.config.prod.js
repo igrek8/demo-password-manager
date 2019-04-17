@@ -1,5 +1,3 @@
-const HtmlWebpackPlugin = require('html-webpack-plugin');
-
 module.exports = {
   entry: './src/index.js',
   module: {
@@ -15,10 +13,8 @@ module.exports = {
     extensions: ['.js', '.jsx'],
   },
   output: {
-    path: `${__dirname}/build`,
+    path: `${__dirname}/static`,
     filename: 'bundle.js',
   },
-  plugins: [
-    new HtmlWebpackPlugin({ inject: true, template: './src/index.html' }),
-  ],
+  plugins: [],
 };

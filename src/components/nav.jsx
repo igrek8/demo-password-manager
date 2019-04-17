@@ -17,20 +17,24 @@ const styles = (theme) => ({
     color: '#fff',
   },
   item: {
-    width: 245,
-    '& + &': {
-      marginTop: theme.spacing.unit,
-    },
-    '&:first-child': {
-      marginTop: theme.spacing.unit * 2,
+    [theme.breakpoints.up('md')]: {
+      width: 245,
+      '&:first-child': {
+        marginTop: theme.spacing.unit * 2,
+      },
+      '& + &': {
+        marginTop: theme.spacing.unit,
+      },
     },
   },
   link: {
     display: 'flex',
     alignItems: 'center',
-    justifyContent: 'space-between',
     color: 'inherit',
-    paddingRight: theme.spacing.unit * 5,
+    [theme.breakpoints.up('md')]: {
+      justifyContent: 'space-between',
+      paddingRight: theme.spacing.unit * 5,
+    },
     padding: theme.spacing.unit,
     textDecoration: 'none',
   },
@@ -50,7 +54,7 @@ const styles = (theme) => ({
   },
 });
 
-const Toolbar = ({ classes, paths }) => {
+const Nav = ({ classes, paths }) => {
   return (
     <nav>
       <ul className={classes.root}>
@@ -71,4 +75,4 @@ const Toolbar = ({ classes, paths }) => {
   );
 };
 
-export default withStyles(styles)(Toolbar);
+export default withStyles(styles)(Nav);

@@ -8,7 +8,7 @@
     "format": "prettier --check \"**/*.{md,html,css,js,jsx,json}\"",
     "format:fix": "prettier --write \"**/*.{md,html,css,js,jsx,json}\"",
     "start": "webpack-dev-server --config ./webpack.config.dev.js --mode development",
-    "build": "rimraf ./build && webpack --config ./webpack.config.prod.js --mode production",
+    "build": "webpack --config ./webpack.config.prod.js --mode production",
     "test": "echo \"No test specified\" && exit 0"
   },
   "keywords": [],
