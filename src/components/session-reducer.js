@@ -1,15 +1,27 @@
-import { INIT_SESSION, DESTROY_SESSION } from './session-reducer-actions';
+import { INIT_SESSION, DESTROY_SESSION } from './session-actions';
+import { ADD_RESOURCE } from './resources-actions';
 
-const sessionReducer = (state, action) => {
+import resourcesReducer from './resources-reducer';
+
+const initialState = null;
+
+const sessionReducer = (state = initialState, action) => {
   switch (action.type) {
     case INIT_SESSION: {
-      return action.payload.newSession;
+      return action.payload;
+    }
+    case ADD_RESOURCE: {
+      return {
+        ...state,
+        resources: resourcesReducer(state.resources, action),
+      };
     }
     case DESTROY_SESSION: {
-      return null;
+      return initialState;
     }
-    default:
+    default: {
       return state;
+    }
   }
 };
 

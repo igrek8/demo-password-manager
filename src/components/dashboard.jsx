@@ -1,7 +1,10 @@
 import React from 'react';
+import { Switch, Route } from 'react-router-dom';
 import withStyles from '@material-ui/core/styles/withStyles';
 import Nav from './nav';
 import Main from './main-pane';
+import Resources from './resources';
+import ResourcePreview from './resource-preview';
 
 const styles = () => ({
   root: {
@@ -21,7 +24,12 @@ const Dashboard = ({ classes }) => {
   return (
     <div className={classes.root}>
       <Nav paths={paths} />
-      <Main>Application</Main>
+      <Main>
+        <Switch>
+          <Route exact path='/' component={Resources} />
+          <Route exact path='/new' component={ResourcePreview} />
+        </Switch>
+      </Main>
     </div>
   );
 };
