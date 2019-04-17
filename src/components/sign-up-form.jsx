@@ -66,7 +66,7 @@ const SignUpForm = ({
             <span className={cn(classes.button)}>{child}</span>
           ))}
           <button type='reset' className={cn(classes.button)}>
-            Clear
+            Reset
           </button>
         </div>
       </fieldset>

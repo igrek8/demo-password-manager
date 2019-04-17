@@ -9,38 +9,45 @@ import { encryptData } from '../utils/cipher';
 import sessionReducer from './session-reducer';
 import { ADD_RESOURCE } from './resources-actions';
 import promptForPasswordHash from '../utils/prompt-for-password-hash';
+import encryptResource from '../utils/encrypt-resource';
+import useRouter from '../hooks/use-router';
 
-const encryptRecords = (secret, records) => {
-  return records.map((record) => {
-    return {
-      ...record,
-      data: encryptData(secret, record.data),
-    };
-  });
+const initialValues = {
+  id: null,
+  name: '',
+  records: [
+    {
+      name: '',
+      data: '',
+    },
+  ],
 };
 
-const ResourcePreview = (props) => {
+const NewResource = (props) => {
+  const { history } = useRouter();
   const { decryptedSession, persistSession } = useContext(SessionContext);
   const onSubmit = useCallback(
-    (values) => {
+    (resource) => {
       const secret = promptForPasswordHash();
       if (secret === null) {
         return { [FORM_ERROR]: 'Invalid password' };
       }
-      const records = encryptRecords(secret, values.records);
-      const resource = { id: v4(), records };
-      const action = { type: ADD_RESOURCE, payload: resource };
+      const id = v4();
+      const newResource = encryptResource(secret, { ...resource, id });
+      const action = { type: ADD_RESOURCE, payload: newResource };
       const nextDecryptedSession = sessionReducer(decryptedSession, action);
       const dataString = JSON.stringify(nextDecryptedSession);
       const encryptedSession = encryptData(secret, dataString);
       persistSession(encryptedSession, nextDecryptedSession);
-      return resource;
+      history.push(`/resources/${id}`);
+      return newResource;
     },
-    [decryptedSession, persistSession],
+    [decryptedSession, history, persistSession],
   );
   return (
     <Form
       {...props}
+      initialValues={initialValues}
       onSubmit={onSubmit}
       mutators={arrayMutators}
       component={ResourceForm}
@@ -48,4 +55,4 @@ const ResourcePreview = (props) => {
   );
 };
 
-export default ResourcePreview;
+export default NewResource;

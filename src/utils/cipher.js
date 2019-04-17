@@ -35,6 +35,9 @@ export const decryptDataSafe = (secret, data) => {
     if (/^failed to decoded$/i.test(caughtErr.message)) {
       return INVALID_DATA;
     }
+    if (/^malformed utf-8 data/i.test(caughtErr.message)) {
+      return INVALID_DATA;
+    }
     throw caughtErr;
   }
 };

@@ -4,7 +4,8 @@ import withStyles from '@material-ui/core/styles/withStyles';
 import Nav from './nav';
 import Main from './main-pane';
 import Resources from './resources';
-import ResourcePreview from './resource-preview';
+import NewResource from './new-resource';
+import EditResource from './edit-resource';
 
 const styles = () => ({
   root: {
@@ -17,7 +18,7 @@ const styles = () => ({
 
 const paths = [
   { to: '/', text: 'All resources', exact: true, shortcut: 'shift + a' },
-  { to: '/new', text: 'Create resource', shortcut: 'shift + n' },
+  { to: '/resources/new', text: 'Create resource', shortcut: 'shift + n' },
 ];
 
 const Dashboard = ({ classes }) => {
@@ -27,7 +28,8 @@ const Dashboard = ({ classes }) => {
       <Main>
         <Switch>
           <Route exact path='/' component={Resources} />
-          <Route exact path='/new' component={ResourcePreview} />
+          <Route exact path='/resources/new' component={NewResource} />
+          <Route exact path='/resources/:id' component={EditResource} />
         </Switch>
       </Main>
     </div>

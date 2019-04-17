@@ -13,6 +13,7 @@ const styles = (theme) => ({
     ...theme.typography.body1,
   },
   item: {
+    display: 'block',
     '& + &': {
       marginTop: theme.spacing.unit,
     },
@@ -30,60 +31,140 @@ const styles = (theme) => ({
   },
 });
 
-const Records = ({ fields, classes }) =>
+const Records = ({ fields, classes, readOnly }) =>
   fields.map((name, index) => {
-    const typeDataKey = `${name}.data`;
+    const nameKey = `${name}.name`;
+    const dataKey = `${name}.data`;
     return (
-      <div key={name} className={cn(classes.item)}>
-        <Field
-          name={typeDataKey}
-          component='textarea'
-          placeholder='Sensitive data'
-          className={cn(classes.item, classes.input)}
-        />
-        <button type='button' onClick={() => fields.remove(index)}>
-          Delete ✗
-        </button>
-      </div>
+      <React.Fragment key={name}>
+        <label htmlFor='resourceName' className={cn(classes.item)}>
+          <span className={cn(classes.item)}>Record name:</span>
+          <Field
+            name={nameKey}
+            component='input'
+            placeholder='Record name'
+            disabled={readOnly}
+            className={cn(classes.item, classes.input)}
+          />
+        </label>
+        <label htmlFor='resourceName' className={cn(classes.item)}>
+          <span className={cn(classes.item)}>Sensitive data:</span>
+          <Field
+            name={dataKey}
+            component='input'
+            type={readOnly ? 'password' : 'text'}
+            placeholder='Sensitive data'
+            disabled={readOnly}
+            className={cn(classes.item, classes.input)}
+          />
+        </label>
+        {!readOnly && (
+          <div className={cn(classes.item)}>
+            <button
+              type='button'
+              disabled={readOnly}
+              className={cn(classes.item)}
+              onClick={() => fields.remove(index)}
+            >
+              Delete ✗
+            </button>
+          </div>
+        )}
+      </React.Fragment>
     );
   });
 
-const ResourceForm = ({ handleSubmit, form, classes }) => {
+const ResourceForm = ({
+  handleSubmit,
+  form,
+  classes,
+  readOnly,
+  initialValues,
+  onEdit,
+}) => {
+  const { id } = initialValues;
   const addRecord = useCallback(() => {
-    form.mutators.push('records', { data: '' });
+    form.mutators.push('records', { name: '', data: '' });
   }, [form]);
   return (
     <form onSubmit={handleSubmit} onReset={form.reset} className={classes.root}>
-      <Typography variant='title'>New resource</Typography>
-      <br />
+      <Typography variant='title' className={cn(classes.item)}>
+        {id ? 'Edit resource' : 'New resource'}
+      </Typography>
       <label htmlFor='resourceName' className={cn(classes.item)}>
-        <span className={cn(classes.item)}>Name:</span>
+        <span className={cn(classes.item)}>Resource name:</span>
         <Field
           name='name'
           id='resourceName'
           component='input'
           placeholder='Resource name'
+          disabled={readOnly}
           className={cn(classes.input, classes.item)}
         />
       </label>
-      <FieldArray name='records' component={Records} classes={classes} />
-      <div className={cn(classes.item)}>
-        <button
-          type='button'
-          className={cn(classes.button)}
-          onClick={addRecord}
-        >
-          Add record
-        </button>
-      </div>
-      <div className={cn(classes.item)}>
-        <button type='submit' className={cn(classes.button)}>
-          Create resource
-        </button>
-        <button type='reset' className={cn(classes.button)}>
-          Clear
-        </button>
-      </div>
+      <FieldArray
+        name='records'
+        readOnly={readOnly}
+        component={Records}
+        classes={classes}
+      />
+      {!readOnly && (
+        <div className={cn(classes.item)}>
+          <button
+            type='button'
+            className={cn(classes.button)}
+            onClick={addRecord}
+            disabled={readOnly}
+          >
+            Add record
+          </button>
+        </div>
+      )}
+      {id === null && (
+        <div className={cn(classes.item)}>
+          <React.Fragment>
+            <button type='submit' className={cn(classes.button)}>
+              Create resource
+            </button>
+            <button
+              type='reset'
+              disabled={readOnly}
+              className={cn(classes.button)}
+            >
+              Reset
+            </button>
+          </React.Fragment>
+        </div>
+      )}
+      {id !== null && readOnly && (
+        <div className={cn(classes.item)}>
+          <React.Fragment>
+            <button
+              type='button'
+              onClick={onEdit}
+              className={cn(classes.button)}
+            >
+              Edit resource
+            </button>
+          </React.Fragment>
+        </div>
+      )}
+      {id !== null && !readOnly && (
+        <div className={cn(classes.item)}>
+          <React.Fragment>
+            <button type='submit' className={cn(classes.button)}>
+              Save resource
+            </button>
+            <button
+              type='reset'
+              disabled={readOnly}
+              className={cn(classes.button)}
+            >
+              Reset
+            </button>
+          </React.Fragment>
+        </div>
+      )}
     </form>
   );
 };
