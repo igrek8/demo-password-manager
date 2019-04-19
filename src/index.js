@@ -7,7 +7,7 @@ import SessionProvider from './components/session-provider';
 import * as sw from './sw';
 
 ReactDOM.render(
-  <Router>
+  <Router basename={process.env.PUBLIC_URL}>
     <CssBaseline>
       <SessionProvider>
         <App />
